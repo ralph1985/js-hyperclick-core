@@ -24,6 +24,14 @@ function findPackageJson(basedir) {
 function loadModuleRoots(basedir, packagePath) {
     const config = JSON.parse(fs.readFileSync(packagePath))
 
+    if (config && !config.moduleRoots) {
+        config.moduleRoots = [
+            'app',
+            'addons',
+            'lib'
+        ]
+    }
+
     if (config && config.moduleRoots) {
         let roots = config.moduleRoots
         if (typeof roots === 'string') {
@@ -65,6 +73,13 @@ function resolveWithCustomRoots(basedir, absoluteModule, options) {
     }
 
     if (roots) {
+        if (config && !config.customPaths) {
+            config.customPaths = {
+                'buzz/': '/',
+                'buzz-core': 'buzz-core/addon/'
+            }
+        }
+
         // Resolve with custom paths
         if (config && config.customPaths && !options.disableCustomPaths) {
             for (const key of Object.keys(config.customPaths)) {
