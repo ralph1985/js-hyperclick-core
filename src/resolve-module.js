@@ -6,6 +6,15 @@ import { sync as resolve } from 'resolve'
 
 // Default comes from Node's `require.extensions`
 const defaultExtensions = [ '.js', '.json', '.node' ]
+const defaultRoots = [
+    'app',
+    'addons',
+    'lib'
+]
+const defaultCustomPaths = {
+    'buzz/': '/',
+    'buzz-core': 'buzz-core/addon/'
+}
 
 function findPackageJson(basedir) {
     const packagePath = path.resolve(basedir, 'package.json')
@@ -25,11 +34,7 @@ function loadModuleRoots(basedir, packagePath) {
     const config = JSON.parse(fs.readFileSync(packagePath))
 
     if (config && !config.moduleRoots) {
-        config.moduleRoots = [
-            'app',
-            'addons',
-            'lib'
-        ]
+        config.moduleRoots = defaultRoots
     }
 
     if (config && config.moduleRoots) {
@@ -74,10 +79,7 @@ function resolveWithCustomRoots(basedir, absoluteModule, options) {
 
     if (roots) {
         if (config && !config.customPaths) {
-            config.customPaths = {
-                'buzz/': '/',
-                'buzz-core': 'buzz-core/addon/'
-            }
+            config.customPaths = defaultCustomPaths
         }
 
         // Resolve with custom paths
